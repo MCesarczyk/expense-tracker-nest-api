@@ -1,29 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { BehaviorSubject } from 'rxjs';
+import { CreateExpenseDto } from 'src/expense/dtos/create-expense.dto';
 import { ExpenseDto } from 'src/expense/dtos/expense.dto';
+import { sampleExpenses } from 'src/expense/expense.fixture';
 
 @Injectable()
 export class ExpenseService {
-  private expenses = new BehaviorSubject<ExpenseDto[]>([
-    {
-      id: '1',
-      name: 'coffee',
-      description: 'Coffee',
-      amount: 2.0,
-      account: 'Debit Card',
-      category: 'Food',
-      completed: true,
-    },
-    {
-      id: '2',
-      name: 'lunch',
-      description: 'Lunch',
-      amount: 10.0,
-      account: 'Cash',
-      category: 'Food',
-      completed: false,
-    },
-  ]);
+  private expenses = new BehaviorSubject<ExpenseDto[]>(sampleExpenses);
 
   getAllExpenses(): ExpenseDto[] {
     return this.expenses.value;
@@ -34,6 +17,17 @@ export class ExpenseService {
     if (!expense) {
       throw new NotFoundException('Expense not found');
     }
+    return expense;
+  }
+
+  createExpense(expense: CreateExpenseDto): CreateExpenseDto {
+    this.expenses.next([
+      ...this.expenses.value,
+      {
+        id: String(this.expenses.value.length + 1),
+        ...expense,
+      },
+    ]);
     return expense;
   }
 }
