@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: expense-tracker-api
+    repo: https://github.com/MCesarczyk/expense-tracker-nest-api
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: ./
+    
+databases:
+  - name: common-db
+    plan: free
