@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  server:
+    container_name: et-server
+    image: et-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 4900:4000
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=docker
+    healthcheck:
+      test: wget localhost:4900/api/health -q -O - > /dev/null 2>&1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
