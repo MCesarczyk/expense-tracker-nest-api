@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 
 const port = process.env.PORT || 4000;
 
@@ -12,10 +12,19 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix('api');
+
+  app.enableVersioning({
+    type: VersioningType.URI,
+    prefix: 'v',
+  });
+
+  app.enableCors({
+    origin: '*',
+  });
 
   const config = new DocumentBuilder()
-    .setTitle(`Full Stack To-Do REST API`)
+    .setTitle(`Expense Tracker REST API`)
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
