@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateExpenseDto } from 'src/expense/dtos/create-expense.dto';
 import { ExpenseDto } from 'src/expense/dtos/expense.dto';
@@ -44,5 +52,32 @@ export class ExpenseController {
   })
   create(@Body() expense: CreateExpenseDto): CreateExpenseDto {
     return this.expenseService.createExpense(expense);
+  }
+
+  @Put(':id')
+  @ApiOkResponse({
+    type: ExpenseDto,
+  })
+  @ApiOperation({
+    summary: 'Updates an expense by ID',
+    tags: ['expense'],
+  })
+  update(
+    @Param('id') id: string,
+    @Body() expense: CreateExpenseDto,
+  ): ExpenseDto {
+    return this.expenseService.updateExpense(id, expense);
+  }
+
+  @Delete(':id')
+  @ApiOkResponse({
+    type: ExpenseDto,
+  })
+  @ApiOperation({
+    summary: 'Deletes an expense by ID',
+    tags: ['expense'],
+  })
+  delete(@Param('id') id: string): void {
+    return this.expenseService.deleteExpense(id);
   }
 }
