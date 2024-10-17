@@ -40,7 +40,7 @@ export class UserController {
     tags: ['user'],
   })
   findAll() {
-    return this.userService.findAll();
+    return this.userService.getAllUsers();
   }
 
   @Get(':id')
@@ -52,7 +52,7 @@ export class UserController {
     tags: ['user'],
   })
   findOne(@Param('id') id: string) {
-    return this.userService.findOne(id);
+    return this.userService.findUserById(id);
   }
 
   @Patch(':id')

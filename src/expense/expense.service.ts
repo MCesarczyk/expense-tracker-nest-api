@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { CreateExpenseDto } from 'src/expense/dtos/create-expense.dto';
 import { UpdateExpenseDto } from 'src/expense/dtos/update-expense.dto';
@@ -19,16 +19,24 @@ export class ExpenseService {
     return this.prisma.expense.findMany();
   }
 
-  getExpenseById(id: string) {
-    return this.prisma.expense.findUnique({
+  async getExpenseById(id: string) {
+    const expense = await this.prisma.expense.findUnique({
       where: {
         id,
       },
     });
+
+    if (!expense) {
+      throw new NotFoundException('Expense not found');
+    }
+
+    return expense;
   }
 
-  updateExpense(id: string, expense: UpdateExpenseDto) {
-    return this.prisma.expense.update({
+  async updateExpense(id: string, expense: UpdateExpenseDto) {
+    await this.getExpenseById(id);
+
+    return await this.prisma.expense.update({
       where: {
         id,
       },
@@ -38,8 +46,10 @@ export class ExpenseService {
     });
   }
 
-  deleteExpense(id: string) {
-    return this.prisma.expense.delete({
+  async deleteExpense(id: string) {
+    await this.getExpenseById(id);
+
+    return await this.prisma.expense.delete({
       where: {
         id,
       },
