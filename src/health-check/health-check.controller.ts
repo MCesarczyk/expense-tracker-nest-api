@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { HealthCheckService } from './health-check.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { StatusDto } from './dtos/status.dto';
+import { Status } from './entities/status.entity';
 
 @ApiTags('health')
 @Controller({ version: '1', path: 'health' })
@@ -10,7 +10,7 @@ export class HealthCheckController {
 
   @Get()
   @ApiOkResponse({
-    type: StatusDto,
+    type: Status,
   })
   @ApiOperation({
     summary: 'Returns current status of backend application',

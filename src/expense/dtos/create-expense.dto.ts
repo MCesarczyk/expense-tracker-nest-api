@@ -1,12 +1,19 @@
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import { ExpenseDto } from './expense.dto';
+import { Expense } from '../entities/expense.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateExpenseDto
   implements
     Pick<
-      ExpenseDto,
-      'name' | 'description' | 'amount' | 'category' | 'account' | 'completed'
+      Expense,
+      | 'name'
+      | 'description'
+      | 'amount'
+      | 'category'
+      | 'account'
+      | 'completed'
+      | 'date'
+      | 'userId'
     >
 {
   @IsString()
@@ -62,4 +69,22 @@ export class CreateExpenseDto
     required: true,
   })
   completed: boolean;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '2021-10-20T00:00:00.000Z',
+    description: 'Date the expense was created',
+    required: true,
+  })
+  date: Date;
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '1',
+    description: 'Id of the user who created the expense',
+    required: true,
+  })
+  userId: string;
 }
