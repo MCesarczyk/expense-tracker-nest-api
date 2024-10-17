@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ExpenseDto {
+export class Expense {
   @ApiProperty({
     example: '1',
     description: 'Id of the expense',
@@ -42,4 +42,16 @@ export class ExpenseDto {
     description: 'Whether th expense is completed',
   })
   completed: boolean;
+
+  @ApiProperty({
+    example: '2021-10-20T00:00:00.000Z',
+    description: 'Date the expense was created',
+  })
+  date: Date;
+
+  @ApiProperty({
+    example: '1',
+    description: 'Id of the user who created the expense',
+  })
+  userId: string;
 }

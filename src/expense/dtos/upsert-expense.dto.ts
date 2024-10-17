@@ -1,3 +1,3 @@
-import { ExpenseDto } from './expense.dto';
+import { Expense } from '../entities/expense.entity';
 
-export type UpsertExpenseDto = ExpenseDto;
+export type UpsertExpenseDto = Expense;

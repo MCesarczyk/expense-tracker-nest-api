@@ -1,53 +1,48 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from 'src/database/prisma/prisma.service';
 import { CreateExpenseDto } from 'src/expense/dtos/create-expense.dto';
-import { ExpenseDto } from 'src/expense/dtos/expense.dto';
 import { UpdateExpenseDto } from 'src/expense/dtos/update-expense.dto';
-import { sampleExpenses } from 'src/expense/expense.fixture';
 
 @Injectable()
 export class ExpenseService {
-  private expenses = new BehaviorSubject<ExpenseDto[]>(sampleExpenses);
+  constructor(private readonly prisma: PrismaService) {}
 
-  getAllExpenses(): ExpenseDto[] {
-    return this.expenses.value;
-  }
-
-  getExpenseById(id: string): ExpenseDto {
-    const expense = this.expenses.value.find((expense) => expense.id === id);
-    if (!expense) {
-      throw new NotFoundException('Expense not found');
-    }
-    return expense;
-  }
-
-  createExpense(expense: CreateExpenseDto): CreateExpenseDto {
-    this.expenses.next([
-      ...this.expenses.value,
-      {
-        id: String(this.expenses.value.length + 1),
+  createExpense(expense: CreateExpenseDto) {
+    return this.prisma.expense.create({
+      data: {
         ...expense,
       },
-    ]);
-    return expense;
-  }
-
-  updateExpense(id: string, expense: UpdateExpenseDto): ExpenseDto {
-    const updatedExpenses = this.expenses.value.map((e) => {
-      if (e.id === id) {
-        return {
-          ...e,
-          ...expense,
-        };
-      }
-      return e;
     });
-    this.expenses.next(updatedExpenses);
-    return updatedExpenses.find((e) => e.id === id);
   }
 
-  deleteExpense(id: string): void {
-    const updatedExpenses = this.expenses.value.filter((e) => e.id !== id);
-    this.expenses.next(updatedExpenses);
+  getAllExpenses() {
+    return this.prisma.expense.findMany();
+  }
+
+  getExpenseById(id: string) {
+    return this.prisma.expense.findUnique({
+      where: {
+        id,
+      },
+    });
+  }
+
+  updateExpense(id: string, expense: UpdateExpenseDto) {
+    return this.prisma.expense.update({
+      where: {
+        id,
+      },
+      data: {
+        ...expense,
+      },
+    });
+  }
+
+  deleteExpense(id: string) {
+    return this.prisma.expense.delete({
+      where: {
+        id,
+      },
+    });
   }
 }
