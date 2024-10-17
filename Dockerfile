@@ -37,9 +37,8 @@ ARG SHADOW_DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
 ENV SHADOW_DATABASE_URL=$SHADOW_DATABASE_URL
 
-RUN npx prisma generate
-
 RUN npx prisma migrate deploy
+RUN npx prisma generate
 
 RUN pnpm build
 
