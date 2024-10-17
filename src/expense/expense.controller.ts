@@ -16,7 +16,7 @@ import { ExpenseService } from 'src/expense/expense.service';
 @ApiTags('expense')
 @Controller({ version: '1', path: 'expense' })
 export class ExpenseController {
-  constructor(private expenseService: ExpenseService) {}
+  constructor(private expenseService: ExpenseService) { }
 
   @Get('')
   @ApiOkResponse({
