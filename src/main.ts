@@ -10,7 +10,10 @@ async function bootstrap() {
   const globalPrefix = 'api';
 
   app.setGlobalPrefix(globalPrefix, {
-    exclude: [{ path: '', method: RequestMethod.GET }],
+    exclude: [
+      { path: '', method: RequestMethod.GET },
+      { path: 'api', method: RequestMethod.GET }
+    ],
   });
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
