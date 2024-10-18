@@ -5,9 +5,16 @@ import { HealthCheckModule } from './health-check/health-check.module';
 import { ExpenseModule } from './expense/expense.module';
 import { PrismaModule } from './database/prisma/prisma.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [HealthCheckModule, ExpenseModule, PrismaModule, UserModule],
+  imports: [
+    HealthCheckModule,
+    ExpenseModule,
+    PrismaModule,
+    UserModule,
+    AuthModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
