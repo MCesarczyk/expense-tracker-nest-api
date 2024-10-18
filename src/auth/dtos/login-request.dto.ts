@@ -5,7 +5,7 @@ import { LoginPayload } from 'src/auth/entities/login-payload.entity';
 export class LoginRequestDto implements LoginPayload {
   @ApiProperty({
     type: String,
-    example: `wallace@thefullstack.engineer`,
+    example: `janusznosacz@example.com`,
   })
   @IsEmail()
   @IsNotEmpty()
