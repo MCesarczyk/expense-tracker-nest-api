@@ -8,6 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ReqUserId } from 'src/common/decorators/req-user-decorator';
 import { CreateExpenseDto } from 'src/expense/dtos/create-expense.dto';
 import { UpdateExpenseDto } from 'src/expense/dtos/update-expense.dto';
 import { Expense } from 'src/expense/entities/expense.entity';
@@ -19,6 +20,18 @@ import { ExpenseService } from 'src/expense/expense.service';
 export class ExpenseController {
   constructor(private expenseService: ExpenseService) { }
 
+  @Post('')
+  @ApiOkResponse({
+    type: CreateExpenseDto,
+  })
+  @ApiOperation({
+    summary: 'Creates a new expense',
+    tags: ['expense'],
+  })
+  async create(@Body() expense: CreateExpenseDto) {
+    return this.expenseService.createExpense(expense);
+  }
+
   @Get('')
   @ApiOkResponse({
     type: Expense,
@@ -28,8 +41,8 @@ export class ExpenseController {
     summary: 'Returns all expenses',
     tags: ['expense'],
   })
-  getAll() {
-    return this.expenseService.getAllExpenses();
+  async getAll(@ReqUserId() userId: string): Promise<Expense[]> {
+    return this.expenseService.getAllExpenses(userId);
   }
 
   @Get(':id')
@@ -40,20 +53,8 @@ export class ExpenseController {
     summary: 'Returns an expense by ID',
     tags: ['expense'],
   })
-  getOne(@Param('id') id: string) {
-    return this.expenseService.getExpenseById(id);
-  }
-
-  @Post('')
-  @ApiOkResponse({
-    type: CreateExpenseDto,
-  })
-  @ApiOperation({
-    summary: 'Creates a new expense',
-    tags: ['expense'],
-  })
-  create(@Body() expense: CreateExpenseDto) {
-    return this.expenseService.createExpense(expense);
+  async getOne(@ReqUserId() userId: string, @Param('id') id: string): Promise<Expense> {
+    return this.expenseService.getExpenseById(userId, id);
   }
 
   @Put(':id')
@@ -64,8 +65,8 @@ export class ExpenseController {
     summary: 'Updates an expense by ID',
     tags: ['expense'],
   })
-  update(@Param('id') id: string, @Body() expense: UpdateExpenseDto) {
-    return this.expenseService.updateExpense(id, expense);
+  async update(@ReqUserId() userId: string, @Param('id') id: string, @Body() expense: UpdateExpenseDto): Promise<Expense> {
+    return this.expenseService.updateExpense(userId, id, expense);
   }
 
   @Delete(':id')
@@ -76,7 +77,7 @@ export class ExpenseController {
     summary: 'Deletes an expense by ID',
     tags: ['expense'],
   })
-  delete(@Param('id') id: string) {
-    return this.expenseService.deleteExpense(id);
+  async delete(@ReqUserId() userId: string, @Param('id') id: string): Promise<Expense> {
+    return this.expenseService.deleteExpense(userId, id);
   }
 }

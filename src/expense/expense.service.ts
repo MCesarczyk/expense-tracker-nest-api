@@ -1,13 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Expense } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { CreateExpenseDto } from 'src/expense/dtos/create-expense.dto';
 import { UpdateExpenseDto } from 'src/expense/dtos/update-expense.dto';
 
 @Injectable()
 export class ExpenseService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
-  createExpense(expense: CreateExpenseDto) {
+  async createExpense(expense: CreateExpenseDto) {
     return this.prisma.expense.create({
       data: {
         ...expense,
@@ -15,13 +16,18 @@ export class ExpenseService {
     });
   }
 
-  getAllExpenses() {
-    return this.prisma.expense.findMany();
+  async getAllExpenses(userId: string): Promise<Expense[]> {
+    return this.prisma.expense.findMany({
+      where: {
+        userId,
+      },
+    });
   }
 
-  async getExpenseById(id: string) {
+  async getExpenseById(userId: string, id: string) {
     const expense = await this.prisma.expense.findUnique({
       where: {
+        userId,
         id,
       },
     });
@@ -33,11 +39,12 @@ export class ExpenseService {
     return expense;
   }
 
-  async updateExpense(id: string, expense: UpdateExpenseDto) {
-    await this.getExpenseById(id);
+  async updateExpense(userId: string, id: string, expense: UpdateExpenseDto) {
+    await this.getExpenseById(userId, id);
 
     return await this.prisma.expense.update({
       where: {
+        userId,
         id,
       },
       data: {
@@ -46,11 +53,12 @@ export class ExpenseService {
     });
   }
 
-  async deleteExpense(id: string) {
-    await this.getExpenseById(id);
+  async deleteExpense(userId: string, id: string) {
+    await this.getExpenseById(userId, id);
 
     return await this.prisma.expense.delete({
       where: {
+        userId,
         id,
       },
     });
