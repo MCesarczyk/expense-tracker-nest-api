@@ -7,14 +7,15 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CreateExpenseDto } from 'src/expense/dtos/create-expense.dto';
 import { UpdateExpenseDto } from 'src/expense/dtos/update-expense.dto';
 import { Expense } from 'src/expense/entities/expense.entity';
 import { ExpenseService } from 'src/expense/expense.service';
 
-@ApiTags('expense')
 @Controller({ version: '1', path: 'expense' })
+@ApiTags('expense')
+@ApiBearerAuth()
 export class ExpenseController {
   constructor(private expenseService: ExpenseService) { }
 

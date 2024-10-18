@@ -17,8 +17,8 @@ import { UserData } from 'src/user/entities/user-data.entity';
 import { ReqUserId } from 'src/common/decorators/req-user-decorator';
 import { SkipAuth } from 'src/common/skip-auth';
 
-@ApiTags('user')
 @Controller({ version: '1', path: 'user' })
+@ApiTags('user')
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
@@ -44,6 +44,7 @@ export class UserController {
     summary: 'Returns all users',
     tags: ['user'],
   })
+  @ApiBearerAuth()
   findAll() {
     return this.userService.getAllUsers();
   }
@@ -73,6 +74,7 @@ export class UserController {
     summary: 'Updates a user by ID',
     tags: ['user'],
   })
+  @ApiBearerAuth()
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
@@ -85,6 +87,7 @@ export class UserController {
     summary: 'Deletes a user by ID',
     tags: ['user'],
   })
+  @ApiBearerAuth()
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }
