@@ -6,17 +6,21 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/user/entities/user.entity';
+import { UserData } from 'src/user/entities/user-data.entity';
+import { ReqUserId } from 'src/common/decorators/req-user-decorator';
+import { SkipAuth } from 'src/common/skip-auth';
 
-@ApiTags('user')
 @Controller({ version: '1', path: 'user' })
+@ApiTags('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
   @Post()
   @ApiOkResponse({
@@ -26,6 +30,7 @@ export class UserController {
     summary: 'Creates a new user',
     tags: ['user'],
   })
+  @SkipAuth()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
@@ -39,6 +44,7 @@ export class UserController {
     summary: 'Returns all users',
     tags: ['user'],
   })
+  @ApiBearerAuth()
   findAll() {
     return this.userService.getAllUsers();
   }
@@ -51,8 +57,13 @@ export class UserController {
     summary: 'Returns a user by ID',
     tags: ['user'],
   })
-  findOne(@Param('id') id: string) {
-    return this.userService.findUserById(id);
+  @ApiBearerAuth()
+  async findOne(@ReqUserId() reqUserId: string, @Param('id') id: string): Promise<UserData> {
+    if (reqUserId !== id) {
+      throw new NotFoundException();
+    }
+    const { password, ...user } = await this.userService.findUserById(id);
+    return user;
   }
 
   @Patch(':id')
@@ -63,6 +74,7 @@ export class UserController {
     summary: 'Updates a user by ID',
     tags: ['user'],
   })
+  @ApiBearerAuth()
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(id, updateUserDto);
   }
@@ -75,6 +87,7 @@ export class UserController {
     summary: 'Deletes a user by ID',
     tags: ['user'],
   })
+  @ApiBearerAuth()
   remove(@Param('id') id: string) {
     return this.userService.remove(id);
   }
