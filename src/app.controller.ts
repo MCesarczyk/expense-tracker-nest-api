@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Redirect } from '@nestjs/common';
 import { AppService } from './app.service';
 import { SkipAuth } from 'src/common/skip-auth';
 
@@ -8,6 +8,12 @@ export class AppController {
   constructor(private readonly appService: AppService) { }
 
   @Get()
+  @Redirect('api')
+  getRoot(): void {
+    return;
+  }
+
+  @Get('api')
   getHello(): string {
     return this.appService.getHello();
   }
