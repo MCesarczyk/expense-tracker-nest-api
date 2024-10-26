@@ -32,10 +32,12 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 COPY --chown=node:node . .
 
 ARG DATABASE_URL
-ARG SHADOW_DATABASE_URL
+ARG DIRECT_URL
+# ARG SHADOW_DATABASE_URL
 
 ENV DATABASE_URL=$DATABASE_URL
-ENV SHADOW_DATABASE_URL=$SHADOW_DATABASE_URL
+ENV DIRECT_URL=$DIRECT_URL
+# ENV SHADOW_DATABASE_URL=$SHADOW_DATABASE_URL
 
 RUN npx prisma migrate deploy
 RUN npx prisma generate
