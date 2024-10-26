@@ -8,6 +8,12 @@ export class AppController {
   constructor(private readonly appService: AppService) { }
 
   @Get()
+  @Redirect('api')
+  getRoot(): void {
+    return;
+  }
+
+  @Get('api')
   getHello(): string {
     return this.appService.getHello();
   }
