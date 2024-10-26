@@ -9,7 +9,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
 
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(globalPrefix, {
+    exclude: [
+      { path: '', method: RequestMethod.GET }
+    ],
+  });
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
@@ -32,7 +36,7 @@ async function bootstrap() {
     jsonDocumentUrl: 'api/v1/swagger.json',
   });
 
-  app.listen(port, () => {
+  app.listen(port, '0.0.0.0', () => {
     console.log(`Example app listening on port ${port} 🚀`);
   });
 }
