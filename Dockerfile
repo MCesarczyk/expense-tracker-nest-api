@@ -31,13 +31,17 @@ COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modul
 
 COPY --chown=node:node . .
 
+ARG PORT
 ARG DATABASE_URL
 ARG DIRECT_URL
 # ARG SHADOW_DATABASE_URL
+ARG JWT_SECRET
 
+ENV PORT=$PORT
 ENV DATABASE_URL=$DATABASE_URL
 ENV DIRECT_URL=$DIRECT_URL
 # ENV SHADOW_DATABASE_URL=$SHADOW_DATABASE_URL
+ENV JWT_SECRET=$JWT_SECRET
 
 RUN npx prisma migrate dev
 RUN npx prisma generate
