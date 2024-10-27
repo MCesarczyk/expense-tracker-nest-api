@@ -9,7 +9,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const globalPrefix = 'api';
 
-  app.setGlobalPrefix(globalPrefix);
+  app.setGlobalPrefix(globalPrefix, {
+    exclude: ['/'],
+  });
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
@@ -33,7 +35,7 @@ async function bootstrap() {
   });
 
   app.listen(port, '0.0.0.0', () => {
-    console.log(`Example app listening on port ${port} 🚀`);
+    console.log(`Expense tracker API listening on port ${port} 🚀`);
   });
 }
 
