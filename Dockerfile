@@ -39,7 +39,7 @@ ENV DATABASE_URL=$DATABASE_URL
 ENV DIRECT_URL=$DIRECT_URL
 # ENV SHADOW_DATABASE_URL=$SHADOW_DATABASE_URL
 
-RUN npx prisma migrate deploy
+RUN npx prisma migrate dev
 RUN npx prisma generate
 
 RUN pnpm build
