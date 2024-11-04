@@ -14,7 +14,7 @@ export class AuthService {
     @Inject(forwardRef(() => UserService))
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async validateUser(email: string, password: string) {
     const user = await this.userService.findUserByEmail(email);
@@ -26,6 +26,12 @@ export class AuthService {
     }
 
     return null;
+  }
+
+  async indentifyUser(email: string) {
+    const user = await this.userService.findUserByEmail(email);
+    const { password, ...userData } = user;
+    return userData;
   }
 
   async generateAccessToken(user: UserData): Promise<TokenResponse> {

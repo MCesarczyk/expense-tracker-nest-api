@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  expense-tracker-db:
+    restart: always
+    image: postgres:13
+    container_name: expense-tracker-db-dev
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
+    expose:
+      - 5434
+
+  expense-tracker-pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    container_name: expense-tracker-pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - '8884:80'
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    depends_on:
+      - expense-tracker-db
+
+volumes:
+  db-data:
+  pgadmin-data:
+    driver: local
