@@ -8,6 +8,7 @@
   "scripts": {
     "postinstall": "prisma generate",
     "build": "nest build",
+    "migrate:db": "prisma migrate dev",
     "build:prod": "prisma migrate dev && prisma generate && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
