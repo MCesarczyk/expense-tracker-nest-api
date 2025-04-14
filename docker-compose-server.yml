@@ -1,0 +1,27 @@
+services:
+  server:
+    restart: always
+    container_name: et-server
+    image: et-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    ports:
+      - 4000:4000
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=docker
+    networks:
+      - expense-tracker-api_default
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 15s
+      timeout: 15s
+      retries: 5
+      start_period: 30s
+
+networks:
+  expense-tracker-api_default:
+    external: true
