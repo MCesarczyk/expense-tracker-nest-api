@@ -20,6 +20,7 @@ COPY --chown=node:node pnpm-lock.yaml ./
 RUN pnpm fetch --prod
 
 COPY --chown=node:node . .
+
 RUN pnpm install
 RUN pnpm rebuild bcrypt
 
@@ -27,36 +28,28 @@ RUN chown -R node.node /usr/src/app
 
 USER node
 
-CMD [ "pnpm", "dev" ]
+COPY --chown=node:node startup.sh ./startup.sh
+
+RUN chmod +x ./startup.sh
+
+CMD ["./startup.sh", "pnpm", "run", "dev"]
 
 ###################
 # BUILD FOR PRODUCTION
 ###################
 
-FROM node:23.11.0-bullseye-slim AS build
-
-# RUN apt-get update \
-#   && apt-get -y install postgresql-client-common \
-#   && rm -rf /var/lib/apt/lists/*
-
+FROM node:23.11.0-bullseye-slim AS builder
 RUN npm install -g npm && npm install --g pnpm
 
 WORKDIR /usr/src/app
 
-COPY --chown=node:node pnpm-lock.yaml ./
-
 COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
-
 COPY --chown=node:node . .
-
-# RUN npx prisma migrate dev
-# RUN npx prisma generate
 
 RUN pnpm build
 
 ENV NODE_ENV=production
-
-RUN pnpm install --prod
+RUN pnpm install --offline --prod
 
 USER node
 
@@ -66,12 +59,12 @@ USER node
 
 FROM node:23.11.0-alpine3.21 AS production
 
-COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/dist ./dist
+COPY --chown=node:node --from=builder /usr/src/app/node_modules ./node_modules
+COPY --chown=node:node --from=builder /usr/src/app/dist ./dist
 
-COPY --chown=node:node wait-for-db.sh ./wait-for-db.sh
+COPY --chown=node:node startup-prod.sh ./startup-prod.sh
 
-RUN chmod +x ./wait-for-db.sh
+RUN chmod +x ./startup-prod.sh
 
-CMD [ "node", "dist/main.js" ]
-# CMD ["./wait-for-db.sh", "expense-tracker-db", "node", "dist/main.js"]
+# CMD [ "node", "dist/main.js" ]
+CMD ["./startup-prod.sh", "expense-tracker-db", "node", "dist/main.js"]
