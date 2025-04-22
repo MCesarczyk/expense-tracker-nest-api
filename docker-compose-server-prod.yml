@@ -1,0 +1,28 @@
+services:
+  server-prod:
+    restart: always
+    container_name: et-server-prod
+    image: et-server-prod
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 4044:4000
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=docker
+    networks:
+      - expense-tracker-api_default
+    healthcheck:
+      test: wget localhost:4000/api/health -q -O - > /dev/null 2>&1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    expose:
+      - 4044
+
+networks:
+  expense-tracker-api_default:
+    external: true

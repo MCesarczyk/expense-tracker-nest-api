@@ -66,5 +66,4 @@ COPY --chown=node:node startup-prod.sh ./startup-prod.sh
 
 RUN chmod +x ./startup-prod.sh
 
-# CMD [ "node", "dist/main.js" ]
-CMD ["./startup-prod.sh", "expense-tracker-db", "node", "dist/main.js"]
+CMD [ "node", "dist/main.js" ]
