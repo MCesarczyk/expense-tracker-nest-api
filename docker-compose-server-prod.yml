@@ -22,6 +22,18 @@ services:
       start_period: 30s
     expose:
       - 4044
+  nginx:
+    build: ./nginx
+    container_name: et-nginx
+    restart: always
+    networks:
+      - expense-tracker-api_default
+    ports:
+      - '80:80'
+    depends_on:
+      - server-prod
+    expose:
+      - 4444
 
 networks:
   expense-tracker-api_default:
