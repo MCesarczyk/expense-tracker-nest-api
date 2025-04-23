@@ -33,7 +33,7 @@ services:
     depends_on:
       - server-prod
     expose:
-      - 4444
+      - 80
 
 networks:
   expense-tracker-api_default:
